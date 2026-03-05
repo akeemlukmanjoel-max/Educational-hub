@@ -1,0 +1,161 @@
+
+<html>
+<head>
+<title>School Quiz</title>
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  background-color:yellow;
+  padding: 20px;
+}
+h1 { color: blue; }
+button {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
+#result { margin-top: 20px; font-size: 18px; color: red; }
+#score { margin-top: 20px; font-size: 20px; color: darkblue; }
+</style>
+</head>
+<body>
+
+<h1>School Quiz</h1>
+<p id="question"></p>
+
+<div id="answers">
+  <button onclick="checkAnswer(0)"></button>
+  <button onclick="checkAnswer(1)"></button>
+  <button onclick="checkAnswer(2)"></button>
+  <button onclick="checkAnswer(3)"></button>
+</div>
+
+<p id="result"></p>
+<p id="score"></p>
+
+<script>
+// ----- Questions Across 12 Subjects -----
+const allQuestions = [
+  // Math
+  {q:"What is 2 + 2?", a:["3","4","5","6"], correct:1},
+  {q:"5 × 6 = ?", a:["30","25","56","11"], correct:0},
+  {q:"Square root of 64?", a:["6","8","16","32"], correct:1},
+
+  // Science (General)
+  {q:"Water freezes at?", a:["0°C","100°C","50°C","-10°C"], correct:0},
+  {q:"Boiling point of water?", a:["50°C","100°C","0°C","80°C"], correct:1},
+  {q:"Light travels fastest in?", a:["Air","Vacuum","Water","Glass"], correct:1},
+
+  // English
+  {q:"Past tense of 'go'?", a:["Goed","Went","Gone","Going"], correct:1},
+  {q:"Synonym of 'happy'?", a:["Sad","Joyful","Angry","Tired"], correct:1},
+  {q:"Opposite of 'cold'?", a:["Hot","Warm","Cool","Chilly"], correct:0},
+
+  // History
+  {q:"Who was the first president of the USA?", a:["Washington","Lincoln","Adams","Jefferson"], correct:0},
+  {q:"Year the USA was founded?", a:["1776","1492","1800","1600"], correct:0},
+  {q:"Who discovered America?", a:["Columbus","Newton","Einstein","Galileo"], correct:0},
+
+  // Geography
+  {q:"Capital of France?", a:["Paris","London","Berlin","Rome"], correct:0},
+  {q:"Largest desert in the world?", a:["Sahara","Gobi","Kalahari","Arctic"], correct:0},
+  {q:"Mount Everest is in?", a:["Nepal","China","India","Bhutan"], correct:0},
+
+  // Economics
+  {q:"GDP stands for?", a:["Gross Domestic Product","General Demand Price","Gross Demand Product","Global Domestic Price"], correct:0},
+  {q:"Demand increases when?", a:["Price rises","Price falls","Supply decreases","Supply rises"], correct:1},
+  {q:"Inflation means?", a:["Price decrease","Price increase","More jobs","Less money"], correct:1},
+
+  // Chemistry
+  {q:"H2O is the chemical formula for?", a:["Oxygen","Water","Hydrogen","Helium"], correct:1},
+  {q:"Chemical symbol for gold?", a:["Au","Ag","Fe","Pb"], correct:0},
+  {q:"Acid with formula HCl is?", a:["Hydrochloric Acid","Sulfuric Acid","Nitric Acid","Acetic Acid"], correct:0},
+
+  // Biology
+  {q:"Which organ pumps blood?", a:["Lungs","Heart","Kidney","Brain"], correct:1},
+  {q:"Which gas do plants produce?", a:["Oxygen","CO2","Nitrogen","Helium"], correct:0},
+  {q:"Humans have how many chromosomes?", a:["23","46","44","48"], correct:1},
+
+  // Physics
+  {q:"Unit of force?", a:["Newton","Joule","Watt","Pascal"], correct:0},
+  {q:"Which planet has rings?", a:["Saturn","Mars","Earth","Venus"], correct:0},
+  {q:"Largest planet in our solar system?", a:["Jupiter","Earth","Mars","Saturn"], correct:0},
+
+  // Commerce
+  {q:"Profit = ?", a:["Revenue - Cost","Revenue + Cost","Cost - Revenue","Cost × Revenue"], correct:0},
+  {q:"Capital refers to?", a:["Money invested","Workers","Buildings","Goods"], correct:0},
+  {q:"Invoice is?", a:["Bill for goods","Purchase order","Receipt of salary","Profit report"], correct:0},
+
+  // Government
+  {q:"Who makes laws in Nigeria?", a:["Judiciary","Legislature","Executive","Police"], correct:1},
+  {q:"President of a country is part of?", a:["Legislature","Executive","Judiciary","Army"], correct:1},
+  {q:"Judges belong to?", a:["Legislature","Executive","Judiciary","Police"], correct:2},
+
+  // Civic Education
+  {q:"Rights include?", a:["Voting","Taxes","Working","Driving"], correct:0},
+  {q:"Responsibility includes?", a:["Obey laws","Ignore rules","Cheat","Steal"], correct:0},
+  {q:"Democracy means?", a:["People rule","King rules","Single leader","No rules"], correct:0},
+
+  // Add more questions for each subject to reach hundreds
+];
+
+// ---------- Pick 50 Random Questions ----------
+function getRandomQuestions(array, n){
+  let shuffled = array.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, n);
+}
+
+let questions = getRandomQuestions(allQuestions, 50);
+let current = 0;
+let score = 0;
+
+// ---------- Show Question ----------
+function showQuestion(){
+  if(current >= questions.length){
+    document.getElementById("question").innerText = "Quiz Finished!";
+    document.getElementById("answers").style.display = "none";
+
+    document.getElementById("score").innerText = "Your Score: " + score + "/" + questions.length;
+
+    let correctList = "<h3>Correct Answers:</h3><ol>";
+    for(let i=0;i<questions.length;i++){
+      correctList += "<li>" + questions[i].q + "<br>Answer: " + questions[i].a[questions[i].correct] + "</li>";
+    }
+    correctList += "</ol>";
+    document.getElementById("result").innerHTML = correctList;
+
+    return;
+  }
+
+  let q = questions[current];
+  document.getElementById("question").innerText = q.q;
+  let buttons = document.querySelectorAll("#answers button");
+  for(let i=0;i<4;i++){
+    buttons[i].innerText = q.a[i];
+  }
+  document.getElementById("result").innerText = "";
+}
+
+// ---------- Check Answer ----------
+function checkAnswer(index){
+  if(index === questions[current].correct){
+    score++;
+    document.getElementById("result").innerText = "Correct ✅";
+  } else {
+    document.getElementById("result").innerText = "Wrong ❌";
+  }
+  current++;
+  setTimeout(showQuestion, 800);
+}
+
+// Start quiz
+showQuestion();
+</script>
+
+</body>
+</html>
